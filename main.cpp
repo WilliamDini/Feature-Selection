@@ -2,6 +2,12 @@
 
 using namespace std;
 
+const float HUNDO = 100.0;
+
+double evaluationFunc() {
+  return static_cast<double>((rand() % 100));
+}
+
 int main() {
   int features, algorNumIn;
   float accuracyPerc = 0.0;
@@ -18,8 +24,9 @@ int main() {
   cin >> algorNumIn;
   cout << endl;
 
-  cout << "Using no features and \"random\" evaluation, I get the accuracy of " << accuracyPerc << "%" << endl << endl;
+  accuracyPerc = evaluationFunc();
 
+  cout << "Using no features and \"random\" evaluation, I get the accuracy of " << accuracyPerc << "%" << endl << endl;
   cout << "Beginning Search." << endl << endl;
 
 
