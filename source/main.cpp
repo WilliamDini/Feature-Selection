@@ -1,9 +1,12 @@
 #include <cstdlib> 
 #include <iostream> 
 #include <time.h> 
+#include <fstream>
+#include <sstream>
 #include "../header/node.h"
 #include "../header/tree.h"
-
+#include "../header/classify.h"
+#include "../header/validate.h"
 
 using namespace std;
 
@@ -13,13 +16,54 @@ double evaluationFunc() {
   return static_cast<double>((rand() % 100));
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+
+  string fileName;
+  int fileType;
+
   srand(time(0)); 
   int features, algorNumIn;
   //float accuracyPerc = 0.0;
   Tree *solve;
 
   cout << "Welcome to Drizzay's Feature Selection Algorithm" << endl << endl;
+
+  cout << "Enter 1 for Small Data Set or 2 for Large Data Set.\n";
+  cin >> fileType;
+  if(fileType == 1) {
+    fileName = "small-test-dataset-1.txt";
+  } else {
+    fileName = "large-test-dataset-1.txt";
+  }
+
+  ifstream inFS;
+  string line;
+  float classNum, featNum;
+  inFS.open(fileName);
+  if(!inFS.is_open()) {
+      cout << "ERROR: Invalid File" << endl;
+      exit(1);
+  }
+  Validate dataSet;
+  
+  while(getline(inFS, line)) {
+    istringstream stream(line);
+    Classifier dataPoint;
+    stream >> classNum;
+
+    while(stream >> featNum) {
+      dataPoint.insertFeatures(featNum);
+    }
+
+    dataPoint.setClass(classNum);
+    dataSet.insertData(dataPoint);
+  }
+  // cout << dataSet.dataSetSize() << endl;
+  // dataSet.print();
+
+  inFS.close();
+
+
   cout << "Enter 1 for default features, or 2 to enter your own.\n";
   cin >> features;
   if (features == 1) {
