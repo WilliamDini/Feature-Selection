@@ -2,10 +2,10 @@ CXX = g++
 CXXFLAGS = -std=c++17 -g
 
 SRCDIR = source
-SRCS = $(SRCDIR)/main.cpp $(SRCDIR)/node.cpp $(SRCDIR)/tree.cpp
+SRCS = $(SRCDIR)/main.cpp $(SRCDIR)/node.cpp $(SRCDIR)/tree.cpp $(SRCDIR)/classify.cpp $(SRCDIR)/validate.cpp
 TARGET = featSearch
 
-all: $(TARGET)
+# all: $(TARGET)
 
 $(TARGET): $(SRCS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRCS)
