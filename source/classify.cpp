@@ -10,17 +10,6 @@ float Classifier::getfeatNum(int x) { return this->features.at(x); }
 
 int Classifier::featSize() { return this->features.size(); }
 
-void Classifier::normalize(vector<Classifier> &x) {
-    for(int i = 0; i < x.size(); ++i) {
-        for(int j = 0; j < x.at(i).featSize(); ++j) {
-
-        }
-    }
-
-}
-
-
-
 float Classifier::normalizeCalc(float value, float min, float max) {
     return ((value - min) / (max - min));
 }

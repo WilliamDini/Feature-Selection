@@ -12,6 +12,17 @@ using namespace std;
 
 const float HUNDO = 100.0;
 
+void print(vector<vector<float>> x) {
+  for(int i = 0; i < x.size(); i++) {
+    cout << "[" << i << "] = [";
+    for(int j = 0; j < x.at(i).size(); j++) {
+      cout << x.at(i).at(j) << ", ";
+    }
+    cout << "] => Size of " << x.at(i).size() << endl;
+  }
+}
+
+
 double evaluationFunc() {
   return static_cast<double>((rand() % 100));
 }
@@ -51,7 +62,8 @@ int main(int argc, char *argv[]) {
   // Validate dataSet;
   int instances = 0;
   int feat;
-  vector<Classifier> dataSet;
+  // vector<Classifier> dataSet;
+  Validate dataSet;
   while(getline(inFS, line)) {
     instances++;
     istringstream stream(line);
@@ -62,14 +74,17 @@ int main(int argc, char *argv[]) {
       feat++;
       dataPoint.insertFeatures(featNum);
     }
-
     dataPoint.setClass(classNum);
-    dataSet.push_back(dataPoint);
+    // dataSet.push_back(dataPoint);
+    dataSet.insertData(dataPoint);
   }
 
-  
+  vector<vector<float>> Norm = dataSet.seperateData(feat, instances);
+
   // cout << dataSet.dataSetSize() << endl;
   // dataSet.print();
+  // cout << endl;
+  // print(Norm);
   inFS.close();
 
   cout << "Type the number of the alorithm you want to run." << endl << endl;
@@ -84,27 +99,31 @@ int main(int argc, char *argv[]) {
 
   cout << "This dataset has " << feat << " features (not including the class attribute), with " << instances << " instances." << endl << endl;
   cout << "Please wait while I normalize the data... ";
+
+
   //Normalize here
+
+
   cout << " Done!" << endl << endl;
 
-  if (features == 1) {
-    solve = new Tree();
-  }
-  else if (features == 2) {
-    int numF = 0;
-    cout << "Features will be represented by integers, i.e '1','2','3'...\n"
-         << "Please enter total number of features:\n";
-    cin  >> numF;
-    solve = new Tree(numF);
-  }
-  solve->fillTree();
-  cout << "Enter 1 for forward selection, 2 for backward elimination\n";
-  int srch;
-  cin >> srch;
-  cout << "Using no features and \"random\" evaluation, I get the accuracy of " << solve->getStrtPrcnt() << "%\n\n"
-       << "Beginning search\n\n";
-  solve->search(srch);
-  delete solve;
+  // if (features == 1) {
+  //   solve = new Tree();
+  // }
+  // else if (features == 2) {
+  //   int numF = 0;
+  //   cout << "Features will be represented by integers, i.e '1','2','3'...\n"
+  //        << "Please enter total number of features:\n";
+  //   cin  >> numF;
+  //   solve = new Tree(numF);
+  // }
+  // solve->fillTree();
+  // cout << "Enter 1 for forward selection, 2 for backward elimination\n";
+  // int srch;
+  // cin >> srch;
+  // cout << "Using no features and \"random\" evaluation, I get the accuracy of " << solve->getStrtPrcnt() << "%\n\n"
+  //      << "Beginning search\n\n";
+  // solve->search(srch);
+  // delete solve;
 
 
 
