@@ -45,10 +45,10 @@ int main(int argc, char *argv[]) {
       exit(1);
   }
   Validate dataSet;
+  Classifier dataPoint;
   
   while(getline(inFS, line)) {
     istringstream stream(line);
-    Classifier dataPoint;
     stream >> classNum;
 
     while(stream >> featNum) {
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
   solve->search(srch);
   delete solve;
 
-
+   dataPoint.normalize(dataPoint);
 
   return 0;
 }

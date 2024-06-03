@@ -1,6 +1,7 @@
-#ifndef CLASSIFIER
-#define CLASSIFIER
+#ifndef CLASSIFIER_H
+#define CLASSIFIER_H
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -14,6 +15,7 @@ class Classifier {
         float getClassNum();
         float getfeatNum(int);
         int featSize();
+        void normalize(vector<vector<float>> &data);
 };
 
 #endif
