@@ -12,6 +12,7 @@ class Validate {
         void insertData(Classifier);
         int dataSetSize();
         void print();
+        vector<vector<float>> seperateData(int, int);
 };
 
 #endif

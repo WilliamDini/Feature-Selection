@@ -5,6 +5,18 @@ void Validate::insertData(Classifier x) { this->Train.push_back(x); }
 
 int Validate::dataSetSize() { return this->Train.size(); }
 
+vector<vector<float>> Validate::seperateData(int y, int z) {
+    vector<vector<float>> norman;
+    for(int i = 0; i < y; ++i) {
+        vector<float> naval;
+        for(int j = 0; j < z; ++j) {
+            naval.push_back(this->Train.at(j).getfeatNum(i));
+        }
+        norman.push_back(naval);
+    }
+    return norman;
+}
+
 void Validate::print() {
     for(int i = 0; i < this->Train.size(); i++) {
         int cnt = 0;

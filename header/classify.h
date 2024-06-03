@@ -15,7 +15,9 @@ class Classifier {
         float getClassNum();
         float getfeatNum(int);
         int featSize();
-        void normalize(vector<vector<float>> &data);
+        float findMax(vector<float>);
+        float findMin(vector<float>);
+        float normalizeCalc(float, float, float);
 };
 
 #endif
