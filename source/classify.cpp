@@ -9,3 +9,38 @@ float Classifier::getClassNum() { return this->classNum; }
 float Classifier::getfeatNum(int x) { return this->features.at(x); }
 
 int Classifier::featSize() { return this->features.size(); }
+
+void Classifier::normalize(vector<Classifier> &x) {
+    for(int i = 0; i < x.size(); ++i) {
+        for(int j = 0; j < x.at(i).featSize(); ++j) {
+
+        }
+    }
+
+}
+
+
+
+float Classifier::normalizeCalc(float value, float min, float max) {
+    return ((value - min) / (max - min));
+}
+
+float Classifier::findMax(vector<float> x) {
+    int min = x.at(0);
+    for(int i = 0; i < x.size(); i++) {
+        if(x.at(i) < min) {
+            min = x.at(i);
+        }
+    }
+    return min;
+}
+
+float Classifier::findMin(vector<float> x) {
+    int max = x.at(0);
+    for(int i = 0; i < x.size(); i++) {
+        if(x.at(i) > max) {
+            max = x.at(i);
+        }
+    }
+    return max;
+}

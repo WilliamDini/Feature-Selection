@@ -28,13 +28,15 @@ int main(int argc, char *argv[]) {
 
   cout << "Welcome to Drizzay's Feature Selection Algorithm" << endl << endl;
 
-  cout << "Enter 1 for Small Data Set or 2 for Large Data Set.\n";
-  cin >> fileType;
-  if(fileType == 1) {
-    fileName = "small-test-dataset-1.txt";
-  } else {
-    fileName = "large-test-dataset-1.txt";
-  }
+  // cout << "Enter 1 for Small Data Set or 2 for Large Data Set.\n";
+  cout << "Type in the name of the file to test :  ";
+  cin >> fileName;
+  // if(fileType == 1) {
+  //   fileName = "small-test-dataset-1.txt";
+  // } else {
+  //   fileName = "large-test-dataset-1.txt";
+  // }
+  cout << endl << endl << endl;
 
   ifstream inFS;
   string line;
@@ -44,28 +46,47 @@ int main(int argc, char *argv[]) {
       cout << "ERROR: Invalid File" << endl;
       exit(1);
   }
-  Validate dataSet;
-  
+
+
+  // Validate dataSet;
+  int instances = 0;
+  int feat;
+  vector<Classifier> dataSet;
   while(getline(inFS, line)) {
+    instances++;
     istringstream stream(line);
     Classifier dataPoint;
     stream >> classNum;
-
+    feat = 0;
     while(stream >> featNum) {
+      feat++;
       dataPoint.insertFeatures(featNum);
     }
 
     dataPoint.setClass(classNum);
-    dataSet.insertData(dataPoint);
+    dataSet.push_back(dataPoint);
   }
+
+  
   // cout << dataSet.dataSetSize() << endl;
   // dataSet.print();
-
   inFS.close();
 
+  cout << "Type the number of the alorithm you want to run." << endl << endl;
 
-  cout << "Enter 1 for default features, or 2 to enter your own.\n";
+  cout << "Forward Selection\n"
+       << "Backward Eliminatio\n"
+       << "Drizzay's Special Algorithm (Nearest Neighbor)" << endl << endl << endl;
   cin >> features;
+
+  // cout << "Enter 1 for default features, or 2 to enter your own.\n";
+  // cin >> features;
+
+  cout << "This dataset has " << feat << " features (not including the class attribute), with " << instances << " instances." << endl << endl;
+  cout << "Please wait while I normalize the data... ";
+  //Normalize here
+  cout << " Done!" << endl << endl;
+
   if (features == 1) {
     solve = new Tree();
   }

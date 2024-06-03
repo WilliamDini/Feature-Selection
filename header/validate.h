@@ -11,7 +11,7 @@ class Validate {
     public:
         void insertData(Classifier);
         int dataSetSize();
-        void print();
+        // void print();
 };
 
 #endif
