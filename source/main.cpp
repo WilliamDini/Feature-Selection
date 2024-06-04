@@ -64,16 +64,12 @@ int main(int argc, char *argv[]) {
   int feat;
   // vector<Classifier> dataSet;
   Validate dataSet;
-<<<<<<< HEAD
-  Classifier dataPoint;
-  
-=======
->>>>>>> main
   while(getline(inFS, line)) {
     instances++;
     istringstream stream(line);
     stream >> classNum;
     feat = 0;
+    Classifier dataPoint;
     while(stream >> featNum) {
       feat++;
       dataPoint.insertFeatures(featNum);
@@ -104,8 +100,9 @@ int main(int argc, char *argv[]) {
   cout << "This dataset has " << feat << " features (not including the class attribute), with " << instances << " instances." << endl << endl;
   cout << "Please wait while I normalize the data... ";
 
-
-  //Normalize here
+  Validate N;
+  dataSet.normalize(Norm);
+  
 
 
   cout << " Done!" << endl << endl;
@@ -128,8 +125,6 @@ int main(int argc, char *argv[]) {
   //      << "Beginning search\n\n";
   // solve->search(srch);
   // delete solve;
-
-   dataPoint.normalize(dataPoint);
 
   return 0;
 }

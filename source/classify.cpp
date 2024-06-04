@@ -35,3 +35,11 @@ float Classifier::findMin(vector<float> x) {
     }
     return max;
 }
+
+float euclideanDistance(const vector<float>& a, const vector<float>& b) const {
+    float sum = 0.0;
+    for (size_t i = 0; i < a.size(); ++i) {
+        sum += pow(a[i] - b[i], 2);
+    }
+    return sqrt(sum);
+}
