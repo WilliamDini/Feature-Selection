@@ -1,18 +1,17 @@
-#include <cstdlib> 
-#include <iostream> 
-#include <time.h> 
-#include <fstream>
-#include <sstream>
+#include "../header/classify.h"
 #include "../header/node.h"
 #include "../header/tree.h"
-#include "../header/classify.h"
 #include "../header/validate.h"
-
+#include <iostream>
+#include <sstream>
+#include <time.h>
+#include <fstream>
+#include <cstdlib>
 using namespace std;
 
 const float HUNDO = 100.0;
 
-void print(vector<vector<float>> x) {
+void print(vector<vector<float> > x) {
   for(int i = 0; i < x.size(); i++) {
     cout << "[" << i << "] = [";
     for(int j = 0; j < x.at(i).size(); j++) {
@@ -42,6 +41,7 @@ int main(int argc, char *argv[]) {
   // cout << "Enter 1 for Small Data Set or 2 for Large Data Set.\n";
   cout << "Type in the name of the file to test :  ";
   cin >> fileName;
+
   // if(fileType == 1) {
   //   fileName = "small-test-dataset-1.txt";
   // } else {
@@ -59,72 +59,68 @@ int main(int argc, char *argv[]) {
   }
 
 
-  // Validate dataSet;
   int instances = 0;
   int feat;
-  // vector<Classifier> dataSet;
-  Validate dataSet;
+  vector<vector<float> > dataSet;
   while(getline(inFS, line)) {
     instances++;
     istringstream stream(line);
+    vector<float> temp;
     stream >> classNum;
+    temp.push_back(classNum);
     feat = 0;
-    Classifier dataPoint;
     while(stream >> featNum) {
       feat++;
-      dataPoint.insertFeatures(featNum);
+      temp.push_back(featNum);
     }
-    dataPoint.setClass(classNum);
+    features = feat;
     // dataSet.push_back(dataPoint);
-    dataSet.insertData(dataPoint);
+    dataSet.push_back(temp);
+    temp.clear();
   }
-
-  vector<vector<float>> Norm = dataSet.seperateData(feat, instances);
 
   // cout << dataSet.dataSetSize() << endl;
   // dataSet.print();
   // cout << endl;
-  // print(Norm);
   inFS.close();
-
-  cout << "Type the number of the alorithm you want to run." << endl << endl;
-
-  cout << "Forward Selection\n"
-       << "Backward Eliminatio\n"
-       << "Drizzay's Special Algorithm (Nearest Neighbor)" << endl << endl << endl;
-  cin >> features;
 
   // cout << "Enter 1 for default features, or 2 to enter your own.\n";
   // cin >> features;
 
-  cout << "This dataset has " << feat << " features (not including the class attribute), with " << instances << " instances." << endl << endl;
-  cout << "Please wait while I normalize the data... ";
+  //cout << "This dataset has " << feat << " features (not including the class attribute), with " << instances << " instances." << endl << endl;
 
-  Validate N;
-  dataSet.normalize(Norm);
   
+  //for testing purposes, should not go here for final product
+  // Validate validator;
+  // validator.initialize(dataSet);
+  // cout << "\n\n\naccuracy: " << validator.leaveOneOut("1 15 27") << "\n\n\n"; 
 
 
-  cout << " Done!" << endl << endl;
+  bool done = false;
+  while(!done) {
+    cout << "Type the number of the alorithm you want to run." << endl << endl;
 
-  // if (features == 1) {
-  //   solve = new Tree();
-  // }
-  // else if (features == 2) {
-  //   int numF = 0;
-  //   cout << "Features will be represented by integers, i.e '1','2','3'...\n"
-  //        << "Please enter total number of features:\n";
-  //   cin  >> numF;
-  //   solve = new Tree(numF);
-  // }
-  // solve->fillTree();
-  // cout << "Enter 1 for forward selection, 2 for backward elimination\n";
-  // int srch;
-  // cin >> srch;
-  // cout << "Using no features and \"random\" evaluation, I get the accuracy of " << solve->getStrtPrcnt() << "%\n\n"
-  //      << "Beginning search\n\n";
-  // solve->search(srch);
-  // delete solve;
+    cout << "Forward Selection\n"
+        << "Backward Eliminatio\n"
+        << "Drizzay's Special Algorithm (Nearest Neighbor)" << endl << endl << endl;
+    cin >> algorNumIn;
+    switch(algorNumIn) {
+    case 1:
+      done = true;
+      solve = new Tree(1, dataSet);
+      break;
+    case 2:
+      done = true;
+      solve = new Tree(2, dataSet);
+      break;
+    case 3:
+      cout << "Drizzay's Special Algorithm is not done :( please select a different algorithm.\n\n)";
+      break;
+    default:
+      cout << "Please enter 1-3.\n\n";
+  }
+  }
+  
 
   return 0;
 }
