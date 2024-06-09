@@ -1,4 +1,5 @@
 #include "../header/classify.h"
+#include <cmath>
 
 void Classifier::setClass(float x) { this->classNum = x; }
 

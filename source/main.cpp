@@ -39,8 +39,12 @@ int main(int argc, char *argv[]) {
   cout << "Welcome to Drizzay's Feature Selection Algorithm" << endl << endl;
 
   // cout << "Enter 1 for Small Data Set or 2 for Large Data Set.\n";
-  cout << "Type in the name of the file to test :  ";
-  cin >> fileName;
+  do {
+    cout << "Enter 1 for general small dataset, 2 for general large, 3 for personal small, 4 for personal large: ";
+    cin >> fileName;
+  } while(fileName != "1" and fileName != "2" and fileName != "3" and fileName != "4");
+  fileName = (fileName == "1")? "../small-test-dataset-1.txt" : (fileName == "2")? "../large-test-dataset-1.txt" : (fileName == "3")? "../CS170_Spring_2024_Small_data__45.txt" : "../CS170_Spring_2024_Large_data__45.txt";
+  
 
   // if(fileType == 1) {
   //   fileName = "CS170_Spring_2024_Small_data__45.txt";
@@ -117,7 +121,7 @@ int main(int argc, char *argv[]) {
       cout << "Drizzay's Special Algorithm is not done :( please select a different algorithm.\n\n)";
       break;
     default:
-      cout << "Please enter 1-3.\n\n";
+      cout << "Please enter 1 or 2.\n\n";
   }
   }
   
