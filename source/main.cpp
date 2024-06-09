@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
   cin >> fileName;
 
   // if(fileType == 1) {
-  //   fileName = "small-test-dataset-1.txt";
+  //   fileName = "CS170_Spring_2024_Small_data__45.txt";
   // } else {
   //   fileName = "large-test-dataset-1.txt";
   // }
@@ -100,9 +100,9 @@ int main(int argc, char *argv[]) {
   while(!done) {
     cout << "Type the number of the alorithm you want to run." << endl << endl;
 
-    cout << "Forward Selection\n"
-        << "Backward Eliminatio\n"
-        << "Drizzay's Special Algorithm (Nearest Neighbor)" << endl << endl << endl;
+    cout << "1: Forward Selection\n"
+        << "2: Backward Eliminatio\n" << endl << endl;
+       // << "3: Drizzay's Special Algorithm (Nearest Neighbor)" << endl << endl << endl;
     cin >> algorNumIn;
     switch(algorNumIn) {
     case 1:
