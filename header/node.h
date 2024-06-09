@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <iostream>
+#include "../header/validate.h"
 
 using std::vector;
 using std::string;

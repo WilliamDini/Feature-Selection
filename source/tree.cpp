@@ -5,47 +5,57 @@
 #include <queue>
 #include <vector>
 #include <algorithm>
+#include <sstream>
+#include <numeric>
+#include <cmath>
+#include <algorithm>
 
 using std::to_string;
 using std::queue;
 using std::cout;
 
-Tree::Tree() {
-    float srtVal = genVal();
-    start = new Node(srtVal,"Z");
-    for (int i = 1; i < 5; i++) {
-        feats.push_back(i);     // Pushing onto vector that will hold features, i.e. 1,2,3...n.
-        string fet = to_string(i);  // Rest of loop from here is for creating the first n nodes. Here the "label" is made.
-        float val = genVal();   // Rand gen each starting nodes value.
-        Node *temp = new Node(val,fet);     // Create the node.
-        temp->setNums({i});
-        umap[fet] = temp;   // Insert node into map => [string_feature_label] = node_address.
-        start->addChild(temp,nullptr);  // Adding all created n nodes as options for the starting node.
+Tree::Tree(int searchType, vector<vector<float>> data) {
+    validator.initialize(data);
+    cout << "\n\n\n Populating tree, please wait...";
+    float srtVal = -1;
+    curNode = new Node(srtVal,"Z");
+    numFeatures = data[0].size();
+    numInstances = data.size();
+    this->searchType = searchType;
+    if(searchType == 1) {
+        for (int i = 1; i < data[0].size(); i++) {
+            string fet = to_string(i);  // Rest of loop from here is for creating the first n nodes. Here the "label" is made.
+            float val = validator.leaveOneOut(fet);   // Rand gen each curNodeing nodes value.
+            Node *temp = new Node(val,fet);     // Create the node.
+            curNode->addChild(temp,nullptr);  // Adding all created n nodes as options for the curNodeing node.
+        }
     }
+    else {
+        for (int i = 0; i < numFeatures; i++) {
+            string fet = "";
+            for(int j = 0; j < numFeatures; j++) {
+                if (i == j) { continue; }
+                fet += to_string(j) + ",";
+            }
+            fet.pop_back();        
+            float val = validator.leaveOneOut(fet);   // generate accuracies for first layer of tree now
+            Node *temp = new Node(val,fet);     // Create the node.
+            curNode->addChild(temp,nullptr);  // Adding all created n nodes as options for the starting node.
+        }   
+    }
+    cout << "Done. \n\n";
+    this->search();
 }
 
-Tree::Tree(int numFeats) {
-    float srtVal = genVal();
-    start = new Node(srtVal,"Z");
-    for (int i = 1; i < numFeats+1; i++) {
-        feats.push_back(i);     // Pushing onto vector that will hold features, i.e. 1,2,3...n.
-        string fet = to_string(i);  // Rest of loop from here is for creating the first n nodes. Here the "label" is made.
-        float val = genVal();   // Rand gen each starting nodes value.
-        Node *temp = new Node(val,fet);     // Create the node.
-        temp->setNums({i});
-        umap[fet] = temp;   // Insert node into map => [string_feature_label] = node_address.
-        start->addChild(temp,nullptr);  // Adding all created n nodes as options for the starting node.
-    }
-}
 
 Tree::~Tree() {
-    delete start;
+    delete curNode;
     for (auto x: umap) delete x.second;
 }
 
-// Return start node percent.
+// Return curNode node percent.
 float Tree::getStrtPrcnt() {
-    return start->getPrcnt();   
+    return curNode->getPrcnt();   
 }
 
 // Randomly generate percentages for phase 1.
@@ -55,61 +65,75 @@ float Tree::genVal() {
         a = rand() % 45 + 30;
     return a/100 * 107.0;
 }
-
+int counter = 0;
 // Perform forward/backward search based on x value.
-void Tree::search(int x) {
-    Node *temp = (x == 1)? start : tail;    // Determines what search to perform. 1 = forward, 2 = backward.
-    Node *maxAcc = temp;    // Node pointer to record node with highest percent.
-    float max = 0;  // Actual percent of maxAcc node.
+void Tree::search() {
+    Node *temp = curNode;
+    Node *maxAcc = curNode;    // Node pointer to record node with highest percent.
+    float max = maxAcc->getPrcnt();  // Actual percent of maxAcc node.
     string dispFt = ""; // String to display trace easier.
-    while (temp != nullptr) {   
-        temp = temp->findMax(x);    // Determines which child/parent of current node to pursue.
-        if (temp == nullptr) continue;  // End of loop
-        if (temp->getPrcnt() > maxAcc->getPrcnt()) maxAcc = temp;   // Record max node.
-        if (temp->getPrcnt() < max) cout << "WARNING: Accuracy has decreased!\n";   // Display decrease warning.
-        max = temp->getPrcnt(); // Set max value.
+    bool stopSearch = false;  
+    curNode = curNode->findMax(searchType);    // Determines which child/parent of current node to pursue.
+    if(curNode->getPrcnt() < maxAcc->getPrcnt()){
+        cout << "Warning: accuracy has descreased! Stopping search...\n The best feature subset is {" << maxAcc->getFeat() << "}, which has an accuracy of ";
+        cout << maxAcc->getPrcnt() << "%.\n";
     }
-    cout << "\nFinished search!! The best feature subset was {";
-    for (int j = 0; j < maxAcc->getFeat().length(); j++) {  // Display max node feature combo with commas.
-            cout << maxAcc->getFeat()[j];
-            if (j < maxAcc->getFeat().length()-1) cout << ",";
+    else {
+        fillTree(curNode->getFeat());
     }
-    cout << "}, which has an accuracy of " << maxAcc->getPrcnt() << "%";
 }
 
 // Creates tree.
-void Tree::fillTree() {
-    queue<Node*> nodeQ; // Queue to hold all nodes still needing expansion.
-    ///////// LOOP HERE
-    vector<Node*> nodes = start->getChildren(); // Pointer to start.
-    for (int i = 0; i < nodes.size(); i++) nodeQ.push(nodes[i]);    // Push all children of start node onto queue.
-    while (!(nodeQ.empty())) {  // Begin creating tree.
-        if (nodeQ.size() == 1) tail = nodeQ.front();    //  When final node is made, set tail equal to it for backward search.
-        Node *temp = nodeQ.front(); // Get front node from queue.
-        nodeQ.pop();
-        for (int i = 0; i < feats.size(); i++) {    // Iterates through all individual features stored in feats vec.
-            if (temp->checkUsedNums(feats[i])) continue;   // This feature is already present in this nodes label.          
-            string unmodFeat = temp->getFeat() + to_string(feats[i]);  // Gets curr nodes label.
-            vector<int> featCombo = temp->getNums();
-            featCombo.push_back(feats[i]);     // Insert current ith feature into featCombo
-            sort(featCombo.begin(), featCombo.end());   // Sort featCombo to get ordered version of label features for future comparison. i.e turn "213" or "132" into "123".
-            string modFeat = "";
-            for (int j = 0; j < featCombo.size(); j++) {    // Iterate through sorted featCombo to convert ordered features into string.
-                modFeat += to_string(featCombo[j]);     // String to hold sorted features in featCombo.
+void Tree::fillTree(string features) {
+    //im really not a fan of how I implemented this (everything down to the if stmt) - couldn't think of a better way to alter the set of
+    //features without first turning it into a vector of ints, before immediately switching it back to string. I've been at this for way
+    //too long already and if it works it works but if you know of a better / less ugly way of doing this pretty please implement it 🙏 
+    cout << "Populating next layer of tree, please wait.....";
+    vector<int> feats;
+    string tempString;
+    stringstream ss(features);
+    vector<string> featureVector;
+    while(getline(ss, tempString, ',')) {
+        featureVector.push_back(tempString);
+    };
+    for(int i = 0; i < featureVector.size(); i++) {
+        feats.push_back(stoi(featureVector[i]));
+    };
+    vector<int> originalFeats = feats;
+    //forward selection case
+    if (searchType == 1) {
+        for(int i = 1; i < numFeatures; i++) {
+            if(find(originalFeats.begin(), originalFeats.end(), i) == originalFeats.end()) {
+                feats.push_back(i);
+                sort(feats.begin(), feats.end());
+                string fet = curNode->getFeat();
+                fet = fet + "," + to_string(i);
+                float percent = validator.leaveOneOut(fet);
+                Node *temp = new Node(percent, fet); 
+                curNode->addChild(temp, curNode);
+                feats = originalFeats;
             }
-            if (umap.count(modFeat)) {  // Check if this ordered feature has already been seen.
-                temp->addChild(umap[modFeat],temp);   // If it has, find the node it belongs to and assign it as child to current node.
-            }
-            else {  // If it hasnt, create new node with unsorted feature string for actual unique label.  
-                float tempVal = genVal();   //  Gen new val for new child node.
-                Node *newNode = new Node(tempVal,unmodFeat);    // Make new child node.
-                newNode->setNums(featCombo);    // Record individual features used to make this feature combo.
-                temp->addChild(newNode,temp);   // Set newly created node as child of current node.
-                umap[modFeat] = newNode;    // Insert newly created node into umap.
-                nodeQ.push(newNode);    // Push new child node onto queue for later expansion.
-            }   
         }
     }
+    else {
+        for(int i = 0; i < originalFeats.size(); i++) {
+            vector<int> tempVec;
+            for(int j = 0; j < originalFeats.size(); j++) {
+                if (i == j) { continue; }
+                tempVec.push_back(originalFeats[j]);
+            }
+                string fet = "";
+                for(int j = 0; j < tempVec.size(); j++) {
+                    fet += to_string(tempVec[j]) + ",";
+                }
+                fet.pop_back();  
+                float percent = validator.leaveOneOut(fet);
+                Node *temp = new Node(percent, fet); 
+                curNode->addChild(temp, curNode);
+        }
+    }
+    cout << "Done.\n\n";
+    this->search();
 }
 
 // Print tree

@@ -4,8 +4,8 @@
 using std::cout;
 
 Node::Node(float f, string s) {
-    prcnt = f;
     feature = s;
+    prcnt = f;
 }
 
 
@@ -45,23 +45,17 @@ Node* Node::findMax(int x) {
     float max = 0;
     Node *temp = nullptr;
     string dispFt;
-    vector<Node*> tempVec = (x == 1)? children : parent; 
+    vector<Node*> tempVec = this->getChildren(); 
     if (tempVec.size() == 0 or tempVec[0] == nullptr) return nullptr;
     for (int i = 0; i < tempVec.size(); i++) {
         dispFt = "";
-        cout << "            Using feature(s) {";
-        f = tempVec[i]->getFeat();
-        for (int j = 0; j < f.length(); j++) {
-            dispFt += f[j];
-            if (j < f.length()-1) dispFt += ",";
-        }
-        cout << dispFt << "} accuracy is " << tempVec[i]->getPrcnt() << "%\n";
+        cout << "Using feature(s) {" << tempVec[i]->feature << "}: accuracy is " << tempVec[i]->getPrcnt() << "%\n";
         if (tempVec[i]->getPrcnt() > max) {
             max = tempVec[i]->getPrcnt(); 
             temp = tempVec[i];
             tempMax = dispFt;
         }
     }
-    cout << "\nFeature set {" << tempMax << "} was best, accuracy is " << temp->getPrcnt() << "%\n\n";
+    cout << "\nFeature set {" << temp->getFeat() << "} was best, accuracy is " << temp->getPrcnt() << "%\n\n";
     return temp;
 }
