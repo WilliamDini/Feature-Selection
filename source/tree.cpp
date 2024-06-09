@@ -19,6 +19,7 @@ Tree::Tree(int searchType, vector<vector<float>> data) {
     cout << "\n\n\n Populating tree, please wait...";
     float srtVal = -1;
     curNode = new Node(srtVal,"Z");
+    maxNode = nullptr;
     numFeatures = data[0].size();
     numInstances = data.size();
     this->searchType = searchType;
@@ -69,16 +70,20 @@ int counter = 0;
 // Perform forward/backward search based on x value.
 void Tree::search() {
     Node *temp = curNode;
-    Node *maxAcc = curNode;    // Node pointer to record node with highest percent.
-    float max = maxAcc->getPrcnt();  // Actual percent of maxAcc node.
+    if (maxNode == nullptr) maxNode = curNode;
+    else if (maxNode->getPrcnt() < curNode->getPrcnt()) maxNode = curNode;
+    //Node *maxAcc = curNode;    // Node pointer to record node with highest percent.
+    float max = maxNode->getPrcnt();  // Actual percent of maxAcc node.
     string dispFt = ""; // String to display trace easier.
     bool stopSearch = false;  
     curNode = curNode->findMax(searchType);    // Determines which child/parent of current node to pursue.
-    if(curNode->getPrcnt() < maxAcc->getPrcnt()){
-        cout << "Warning: accuracy has descreased! Stopping search...\n The best feature subset is {" << maxAcc->getFeat() << "}, which has an accuracy of ";
-        cout << maxAcc->getPrcnt() << "%.\n";
+    if (curNode == nullptr) {
+        cout << "Search over.  The best feature subset is {" << maxNode->getFeat() << "}, which has an accuracy of\n";
+        cout << maxNode->getPrcnt() << "%.\n";
     }
     else {
+        if(curNode->getPrcnt() < maxNode->getPrcnt())
+            cout << "Warning: accuracy has descreased! Continuing search in case of local maxima.\n";
         fillTree(curNode->getFeat());
     }
 }
