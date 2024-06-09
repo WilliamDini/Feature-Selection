@@ -14,6 +14,7 @@ class Tree {
         unordered_map<string,Node*> umap;   // hashmap probably here where string = feature combo and Node* = address of that node if it already exists
         vector<int> feats; // vec to hold actual features        
         Node *curNode;
+        Node *maxNode;
         int numFeatures;    // Total number of features.
         int numInstances;
         int searchType;
